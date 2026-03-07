@@ -1,0 +1,29 @@
+Contact Information
+-------------------
+Name - ID - QQ email address
+
+[张三] - 202245670403 - 1234567890@qq.com
+[吴十]  - 202245670410 - 1345678901@qq.com
+[陈十四] - 202245670414 - 1456789012@qq.com
+
+Tech Lead
+---------
+张三
+
+
+Programming
+-----------
+吴十
+
+
+Testing
+-------
+陈十四
+
+Demo
+----
+陈十四
+
+Proofreading
+------------
+张三
