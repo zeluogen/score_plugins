@@ -1,0 +1,76 @@
+/* 整体页面样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "微软雅黑", sans-serif;
+}
+body {
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+/* 功能按钮区样式 */
+.btn-area {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #ccc;
+}
+.btn-area button, .btn-area input {
+    padding: 8px 15px;
+    margin-right: 10px;
+    margin-bottom: 8px;
+    border: 1px solid #0078d7;
+    border-radius: 4px;
+    background: #0078d7;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn-area input {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+/* 成绩表格样式 */
+.score-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 0 5px #ccc;
+    margin-bottom: 20px;
+}
+.score-table th, .score-table td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 14px;
+}
+.score-table th {
+    background-color: #0078d7;
+    color: #fff;
+    font-weight: normal;
+}
+.score-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+/* 成绩输入框样式 */
+.score-input {
+    width: 80px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    outline: none;
+}
+.score-input:focus {
+    border-color: #0078d7;
+}
+/* 提示文字样式 */
+.tips {
+    color: #666;
+    font-size: 13px;
+    margin-top: 10px;
+    line-height: 1.6;
+}

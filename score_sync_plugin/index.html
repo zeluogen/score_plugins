@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生小组成绩批量输入插件</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {padding: 20px;font-family: "微软雅黑", sans-serif;}
+        h2 {text-align: center;color: #2c3e50;margin-bottom: 30px;}
+        h3 {color: #34495e;margin: 20px 0 10px;}
+        input[type="file"], button {padding: 8px 12px;margin: 5px 0;border-radius: 4px;border: 1px solid #ccc;cursor: pointer;}
+        button {background: #27ae60;color: white;border: none;}
+        button:hover {background: #219653;}
+        #tableContainer {margin-top: 20px;}
+        table {width: 100%;border-collapse: collapse;margin-top: 10px;}
+        th, td {border: 1px solid #ddd;padding: 8px;text-align: center;}
+        th {background: #f2f2f2;font-weight: bold;}
+        input[type="number"] {width: 80px;padding: 4px;text-align: center;border: 1px solid #ddd;border-radius: 3px;}
+        /* 列选择区样式 */
+        #columnSelectContainer {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f9f9f9;
+            display: none;
+        }
+        /* 列选择区分组样式 */
+        .column-group {
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff;
+            border-radius: 4px;
+        }
+        /* 列选择区单元样式 */
+        .column-item {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        /* 列选择区单元输入框样式 */
+        .column-item input {
+            margin-right: 8px;
+        }
+        /* 列选择区确认按钮样式 */
+        #confirmColumnsBtn {
+            background: #3498db;
+            margin-top: 10px;
+        }
+        /* 列选择区确认按钮悬停样式 */
+        #confirmColumnsBtn:hover {
+            background: #2980b9;
+        }
+    </style>
+    <!-- 离线Excel核心库 -->
+    <script src="./lib/xlsx/xlsx.full.min.js"></script>
+    <!-- 离线PDF核心库 -->
+    <script src="./lib/pdfjs/pdf.min.js"></script>
+    <script>
+        if(typeof pdfjsLib !== 'undefined'){
+            pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfjs/pdf.worker.min.js';
+        }
+    </script>
+    <!-- 离线Word解析 -->
+    <script src="./lib/docx/mammoth.browser.min.js"></script>
+    <!-- 离线Word解析库 -->
+    <script src="./lib/docx/docxtemplater.min.js"></script>
+</head>
+<body>
+    <!-- 页面内容 -->
+    <h2>学生小组成绩批量输入插件</h2>
+
+    <div>
+        <h3>上传小组信息文件 txt/pdf/docx</h3>
+        <input type="file" id="groupFileInput" accept=".txt,.pdf,.doc,.docx" multiple> 
+    </div>
+
+    <div>
+        <h3>上传学校成绩Excel模板 xlsx/xls/txt</h3>
+        <input type="file" id="excelFileInput" accept=".xlsx,.xls,.txt">
+    </div>
+
+    <!-- 列选择区（导入模板显示） -->
+    <div id="columnSelectContainer">
+        <h3>配置模板导出列（选择可编辑列和同步列）</h3>
+        <div class="column-group">
+            <h4>导出列</h4>
+            <div id="exportColumnsList"></div>
+        </div>
+        <div class="column-group">
+            <h4>可编辑列</h4>
+            <div id="editableColumnsList"></div>
+        </div>
+        <div class="column-group">
+            <h4>同步列</h4>
+            <div id="syncColumnsList"></div>
+        </div>
+        <button id="confirmColumnsBtn">确认列配置</button>
+    </div>
+
+    <div style="margin-top:20px;">
+        <h3>成绩表的编辑与导出</h3>
+        <button id="exportBtn">导出Excel成绩表</button>
+        <button id="exportTxtBtn" style="background:#9b59b6;margin-left:10px;">导出TXT成绩表</button>
+    </div>
+
+    <!-- 成绩表格展示容器 -->
+    <div id="tableContainer"></div>
+
+    <!-- 核心业务逻辑 -->
+    <script src="./js/main.js"></script>
+</body>
+</html>
