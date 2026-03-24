@@ -1,0 +1,23 @@
+Group information
+-----------------
+
+[张三] - 202245670403 - 1234567890@qq.com
+[吴十]  - 202245670410 - 1345678901@qq.com
+[陈十四] - 202245670414 - 1456789012@qq.com
+
+#Lab1
+-----
+
+Questions                ---  3/3
+1. Can I use an attribute to accomplish the aforementioned task? If no, why? If yes, how?
+2. What database tables and what table fields do I need?
+3. After I finish this task, could I define other properties, such as yesterday, lastweek, lastmonth,
+   lastyear, in a similar fashion?
+
+Passing all 6 test cases --  5/6
+
+Writing                  --  1/1
+
+
+*Total*               --  9/10
+
