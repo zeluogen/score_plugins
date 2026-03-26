@@ -4,55 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学生小组成绩批量输入插件</title>
-    <style>
-        * {margin: 0;padding: 0;box-sizing: border-box;}
-        body {padding: 20px;font-family: "微软雅黑", sans-serif;}
-        h2 {text-align: center;color: #2c3e50;margin-bottom: 30px;}
-        h3 {color: #34495e;margin: 20px 0 10px;}
-        input[type="file"], button {padding: 8px 12px;margin: 5px 0;border-radius: 4px;border: 1px solid #ccc;cursor: pointer;}
-        button {background: #27ae60;color: white;border: none;}
-        button:hover {background: #219653;}
-        #tableContainer {margin-top: 20px;}
-        table {width: 100%;border-collapse: collapse;margin-top: 10px;}
-        th, td {border: 1px solid #ddd;padding: 8px;text-align: center;}
-        th {background: #f2f2f2;font-weight: bold;}
-        input[type="number"] {width: 80px;padding: 4px;text-align: center;border: 1px solid #ddd;border-radius: 3px;}
-        /* 列选择区样式 */
-        #columnSelectContainer {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #f9f9f9;
-            display: none;
-        }
-        /* 列选择区分组样式 */
-        .column-group {
-            margin: 10px 0;
-            padding: 10px;
-            background: #fff;
-            border-radius: 4px;
-        }
-        /* 列选择区单元样式 */
-        .column-item {
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-        }
-        /* 列选择区单元输入框样式 */
-        .column-item input {
-            margin-right: 8px;
-        }
-        /* 列选择区确认按钮样式 */
-        #confirmColumnsBtn {
-            background: #3498db;
-            margin-top: 10px;
-        }
-        /* 列选择区确认按钮悬停样式 */
-        #confirmColumnsBtn:hover {
-            background: #2980b9;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/style.css">
+
     <!-- 离线Excel核心库 -->
     <script src="./lib/xlsx/xlsx.full.min.js"></script>
     <!-- 离线PDF核心库 -->
@@ -66,47 +19,201 @@
     <script src="./lib/docx/mammoth.browser.min.js"></script>
     <!-- 离线Word解析库 -->
     <script src="./lib/docx/docxtemplater.min.js"></script>
+    <!-- Chart.js库 -->
+    <script src="./lib/chartjs/chart.js"></script>
 </head>
 <body>
-    <!-- 页面内容 -->
-    <h2>学生小组成绩批量输入插件</h2>
-
-    <div>
-        <h3>上传小组信息文件 txt/pdf/docx</h3>
-        <input type="file" id="groupFileInput" accept=".txt,.pdf,.doc,.docx" multiple> 
-    </div>
-
-    <div>
-        <h3>上传学校成绩Excel模板 xlsx/xls/txt</h3>
-        <input type="file" id="excelFileInput" accept=".xlsx,.xls,.txt">
-    </div>
-
-    <!-- 列选择区（导入模板显示） -->
-    <div id="columnSelectContainer">
-        <h3>配置模板导出列（选择可编辑列和同步列）</h3>
-        <div class="column-group">
-            <h4>导出列</h4>
-            <div id="exportColumnsList"></div>
+    <div class="container">
+        <!-- 左侧导航栏 -->
+        <div class="sidebar">
+            <div class="logo">scosync</div>
+            <nav>
+                <ul>
+                    <li><a href="#upload-section">上传文件</a></li>
+                    <li><a href="#config-section">配置列</a></li>
+                    <li><a href="#table-section">成绩表格</a></li>
+                    <li><a href="#stats-section">成绩统计</a></li>
+                    <li><a href="#settings-section">配置管理</a></li>
+                </ul>
+            </nav>
         </div>
-        <div class="column-group">
-            <h4>可编辑列</h4>
-            <div id="editableColumnsList"></div>
-        </div>
-        <div class="column-group">
-            <h4>同步列</h4>
-            <div id="syncColumnsList"></div>
-        </div>
-        <button id="confirmColumnsBtn">确认列配置</button>
-    </div>
 
-    <div style="margin-top:20px;">
-        <h3>成绩表的编辑与导出</h3>
-        <button id="exportBtn">导出Excel成绩表</button>
-        <button id="exportTxtBtn" style="background:#9b59b6;margin-left:10px;">导出TXT成绩表</button>
-    </div>
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 上传文件部分 -->
+            <section id="upload-section" class="section">
+                <div class="btn-area">
+                    <div class="file-input-area">
+                        <h3>上传小组信息文件</h3>
+                        <label for="groupFileInput">支持格式：txt、pdf、docx</label>
+                        <input type="file" id="groupFileInput" accept=".txt,.pdf,.doc,.docx" multiple>
+                    </div>
 
-    <!-- 成绩表格展示容器 -->
-    <div id="tableContainer"></div>
+                    <div class="file-input-area">
+                        <h3>上传学校成绩模板</h3>
+                        <label for="excelFileInput">支持格式：xlsx、xls、txt</label>
+                        <input type="file" id="excelFileInput" accept=".xlsx,.xls,.txt">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 列选择区（导入模板显示） -->
+            <section id="config-section" class="section">
+                <div id="columnSelectContainer">
+                    <h3>配置模板导出列</h3>
+                    <div class="column-group">
+                        <h4>导出列</h4>
+                        <div id="exportColumnsList"></div>
+                    </div>
+                    <div class="column-group">
+                        <h4>可编辑列</h4>
+                        <div id="editableColumnsList"></div>
+                    </div>
+                    <div class="column-group">
+                        <h4>同步列</h4>
+                        <div id="syncColumnsList"></div>
+                    </div>
+                    <button id="confirmColumnsBtn">确认列配置</button>
+                </div>
+            </section>
+
+
+            <!-- 成绩表格展示容器 -->
+            <section id="table-section" class="section">
+                <div id="tableContainer" class="table-container">
+                    <div class="empty-state">
+                        <h3>成绩表格</h3>
+                        <p>请先导入成绩模板并配置列</p>
+                        <p>确认列配置并生成成绩表格</p>
+                        <p>在此编辑成绩并导出成绩表</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 成绩统计 -->
+            <section id="stats-section" class="section">
+                <div class="btn-area">
+                    <h3>成绩统计</h3>
+                    
+                    <!-- 统计概览 -->
+                    <div class="stats-overview">
+                        <div class="stat-card">
+                            <h4>平均分</h4>
+                            <div class="stat-value" id="avgScore">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>最高分</h4>
+                            <div class="stat-value" id="maxScore">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>最低分</h4>
+                            <div class="stat-value" id="minScore">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>及格率</h4>
+                            <div class="stat-value" id="passRate">--</div>
+                        </div>
+                    </div>
+
+                    <!-- 成绩分布饼图 -->
+                    <div class="chart-container">
+                        <h4>成绩分布</h4>
+                        <div id="scoreChart" style="width: 100%; height: 400px;"></div>
+                    </div>
+
+                    <!-- 同步列选择 -->
+                    <div class="setting-item">
+                        <label>选择统计列</label>
+                        <select id="statsColumnSelect">
+                            <option value="">请选择列</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 配置管理 -->
+            <section id="settings-section" class="section">
+                <div class="btn-area">
+                    <h3>配置管理</h3>
+                    
+                    <!-- 列配置默认值 -->
+                    <div class="settings-group">
+                        <h4>列配置默认值</h4>
+                        <div class="setting-item">
+                            <label>默认可编辑列</label>
+                            <input type="text" id="defaultEditableColumns" placeholder="用逗号分隔，例如：成绩,备注">
+                        </div>
+                        <div class="setting-item">
+                            <label>默认同步列</label>
+                            <input type="text" id="defaultSyncColumns" placeholder="用逗号分隔，例如：课堂陈述与讨论,案例分析">
+                        </div>
+                    </div>
+
+                    <!-- 学号解析规则 -->
+                    <div class="settings-group">
+                        <h4>学号解析规则</h4>
+                        <div class="setting-item">
+                            <label>学号正则表达式</label>
+                            <input type="text" id="studentIdRegex" value="\d{12}">
+                            <p class="setting-desc">默认匹配12位数字</p>
+                        </div>
+                    </div>
+
+                    <!-- 同步列输入规则 -->
+                    <div class="settings-group">
+                        <h4>同步列输入规则</h4>
+                        <div class="setting-item">
+                            <label>成绩范围</label>
+                            <input type="number" id="scoreMin" placeholder="最小值" value="0">
+                            <input type="number" id="scoreMax" placeholder="最大值" value="100">
+                        </div>
+                        <div class="setting-item">
+                            <label>小数位数</label>
+                            <select id="scoreDecimalPlaces">
+                                <option value="0">0位</option>
+                                <option value="1" selected>1位</option>
+                                <option value="2">2位</option>
+                                <option value="-1">无限制</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 成绩同步设置 -->
+                    <div class="settings-group">
+                        <h4>成绩同步设置</h4>
+                        <div class="setting-item">
+                            <label>开启成绩同步</label>
+                            <label class="switch">
+                                <input type="checkbox" id="syncEnabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 导出设置 -->
+                    <div class="settings-group">
+                        <h4>导出设置</h4>
+                        <div class="setting-item">
+                            <label>文件命名规则</label>
+                            <input type="text" id="fileNameTemplate" value="小组成绩输入完成_{date}">
+                            <p class="setting-desc">{date}会被替换为当前日期</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>导出路径</label>
+                            <input type="text" id="exportPath" placeholder="默认使用浏览器下载路径" disabled>
+                            <p class="setting-desc">由于浏览器限制，无法直接设置下载路径</p>
+                        </div>
+                    </div>
+
+                    <!-- 保存按钮 -->
+                    <div class="setting-actions">
+                        <button id="saveSettingsBtn">保存配置</button>
+                        <button id="resetSettingsBtn" class="secondary">恢复默认</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 
     <!-- 核心业务逻辑 -->
     <script src="./js/main.js"></script>

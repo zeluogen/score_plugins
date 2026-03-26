@@ -3,74 +3,477 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "微软雅黑", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
 body {
+    background-color: #f3f2f1;
+    color: #111827;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* 容器布局 */
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    width: 200px;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Logo样式 */
+.logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0078d4;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+
+/* 导航菜单 */
+.sidebar nav ul {
+    list-style: none;
+    flex: 1;
+}
+
+.sidebar nav ul li {
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    display: block;
+    padding: 10px 20px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: #f3f4f6;
+    color: #0078d4;
+    border-left-color: #0078d4;
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background-color: #f3f2f1;
+}
+
+/* 区块样式 */
+.section {
+    margin-bottom: 30px;
+}
+
+/* 表格容器样式 */
+.table-container {
+    min-height: 500px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
     padding: 20px;
-    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 空状态样式 */
+.empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6b7280;
+    padding: 60px 20px;
+}
+
+.empty-state h3 {
+    color: #374151;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    margin-bottom: 12px;
+    line-height: 1.5;
+    max-width: 400px;
+}
+
+/* 配置管理样式 */
+.settings-group {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.setting-item {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.setting-item label {
+    min-width: 120px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-right: 12px;
+}
+
+/* 开关容器的label样式 */
+.setting-item label.switch {
+    min-width: auto;
+    margin-right: 0;
+}
+
+.setting-item input[type="text"],
+.setting-item input[type="number"],
+.setting-item select {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.setting-item input[type="number"] {
+    max-width: 100px;
+    margin-right: 8px;
+}
+
+.setting-desc {
+    flex: 100%;
+    margin-top: 8px;
+    margin-left: 132px;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+/* 开关按钮样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e5e7eb;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #0078d4;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #0078d4;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* 设置操作按钮 */
+.setting-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* 成绩统计样式 */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-card h4 {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0078d4;
+}
+
+.chart-container {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.chart-container h4 {
+    margin-bottom: 16px;
+    color: #374151;
+}
+
+/* 移除数字输入框调节器 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+h3 {
+    color: #374151;
+    margin: 20px 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+h4 {
+    color: #4b5563;
+    margin: 12px 0 8px;
+    font-size: 13px;
+    font-weight: 500;
 }
 /* 功能按钮区样式 */
 .btn-area {
     margin-bottom: 20px;
-    padding: 15px;
-    background: #fff;
+    padding: 20px;
+    background: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 0 5px #ccc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
 }
-.btn-area button, .btn-area input {
-    padding: 8px 15px;
-    margin-right: 10px;
+/* 文件输入区域 */
+.file-input-area {
+    margin-bottom: 16px;
+}
+.file-input-area label {
+    display: block;
     margin-bottom: 8px;
-    border: 1px solid #0078d7;
-    border-radius: 4px;
-    background: #0078d7;
-    color: #fff;
+    font-size: 13px;
+    color: #374151;
+    font-weight: 500;
+}
+.file-input-area input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    font-size: 13px;
+    color: #6b7280;
+}
+/* 按钮样式 */
+button {
+    padding: 8px 16px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    background: #0078d4;
+    color: #ffffff;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+button:hover {
+    background: #106ebe;
+    box-shadow: 0 2px 4px rgba(0, 120, 212, 0.3);
+}
+button:active {
+    background: #006cbe;
+}
+/* 次要按钮 */
+button.secondary {
+    background: #f3f2f1;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+button.secondary:hover {
+    background: #e6e6e6;
+}
+/* 列选择区样式 */
+#columnSelectContainer {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+/* 列选择区分组样式 */
+.column-group {
+    margin: 16px 0;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+/* 列选择区单元样式 */
+.column-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+}
+/* 列选择区单元输入框样式 */
+.column-item input[type="checkbox"] {
+    margin-right: 10px;
+    width: 16px;
+    height: 16px;
+    accent-color: #0078d4;
+}
+.column-item label {
+    color: #374151;
+    cursor: pointer;
+}
+/* 确认按钮样式 */
+#confirmColumnsBtn {
+    margin-top: 16px;
+    width: 100%;
+    padding: 10px;
     font-size: 14px;
 }
-.btn-area input {
-    background: #fff;
-    color: #333;
-    border: 1px solid #ccc;
+/* 表格容器 */
+#tableContainer {
+    margin-top: 20px;
+    overflow-x: auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 16px;
 }
-/* 成绩表格样式 */
-.score-table {
+/* 表格样式 */
+table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
-    box-shadow: 0 0 5px #ccc;
-    margin-bottom: 20px;
-}
-.score-table th, .score-table td {
-    border: 1px solid #ccc;
-    padding: 8px 12px;
-    text-align: center;
-    font-size: 14px;
-}
-.score-table th {
-    background-color: #0078d7;
-    color: #fff;
-    font-weight: normal;
-}
-.score-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-/* 成绩输入框样式 */
-.score-input {
-    width: 80px;
-    padding: 4px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
-    outline: none;
-}
-.score-input:focus {
-    border-color: #0078d7;
-}
-/* 提示文字样式 */
-.tips {
-    color: #666;
     font-size: 13px;
-    margin-top: 10px;
-    line-height: 1.6;
+}
+table th, table td {
+    border: 1px solid #e5e7eb;
+    padding: 10px 12px;
+    text-align: center;
+}
+table th {
+    background-color: #f3f2f1;
+    color: #374151;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+table tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+table tr:hover {
+    background-color: #f3f4f6;
+}
+/* 输入框样式 */
+input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: border-color 0.2s ease;
+}
+input[type="number"]:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+}
+/* 导出按钮区域 */
+.export-area {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+        min-width: unset;
+    }
+    .btn-area {
+        padding: 16px;
+    }
+    .column-group {
+        padding: 12px;
+    }
+    button {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+    table th, table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
 }

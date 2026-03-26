@@ -1,0 +1,12 @@
+{
+  "defaultExportColumns": [],
+  "defaultEditableColumns": [],
+  "defaultSyncColumns": ["课堂陈述与讨论(必填)", "案例分析(必填)", "专题讨论(必填)", "期末考试(必填)"],
+  "studentIdRegex": "\\d{12}",
+  "scoreMin": 0,
+  "scoreMax": 100,
+  "scoreDecimalPlaces": 1,
+  "syncEnabled": true,
+  "fileNameTemplate": "小组成绩输入完成_{date}",
+  "exportPath": ""
+}
