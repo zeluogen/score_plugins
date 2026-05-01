@@ -36,6 +36,32 @@ let settings = {
 // 默认配置
 let defaultSettings = JSON.parse(JSON.stringify(settings));
 
+// 显示提示弹窗
+function showToast(message, type = 'success') {
+    // 创建弹窗元素
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    // 添加到页面
+    document.body.appendChild(toast);
+    
+    // 显示弹窗
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    }, 10);
+    
+    // 3秒后自动消失
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-20px)';
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+
 // 绑定按钮事件
 window.onload = function() {
     // 上传组信息文件按钮事件
@@ -146,8 +172,10 @@ function saveSettings() {
         }
         
         console.log('配置保存成功');
+        showToast('配置保存成功');
     } catch (error) {
         console.error('保存配置失败：', error);
+        showToast('保存配置失败', 'error');
     }
 }
 
@@ -813,6 +841,7 @@ function syncScore(index, itemKey, score) {
     const scoreNum = parseFloat(score);
     if (isNaN(scoreNum) || scoreNum < settings.scoreMin || scoreNum > settings.scoreMax) {
         console.log(`成绩格式错误！请输入${settings.scoreMin}-${settings.scoreMax}的数字`);
+        showToast(`成绩格式错误！请输入${settings.scoreMin}-${settings.scoreMax}的数字`, 'error');
         return;
     }
 

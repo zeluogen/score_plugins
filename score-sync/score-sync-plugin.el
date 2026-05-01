@@ -2,8 +2,10 @@
 ;; 编辑器版本：Emacs28.2
 ;; 插件目录：~/.emacs.d/score-sync/
 ;; 分组文件目录：~/.emacs.d/score-sync/groups/
+;; 评分文件目录：~/.emacs.d/score-sync/rubrics/
 ;; 快捷键：C-c s s - 执行成绩同步
 ;;         C-c s g - 打开分组文件夹
+;;         C-c s r - 打开评分文件夹
 
 ;; 关闭字节编译警告
 (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
@@ -17,9 +19,9 @@
 (defvar score-sync-groups-dir (expand-file-name "groups" score-sync-root-dir)
   "分组文件存放目录")
 
-;; 评分标准文件存放目录
+;; 评分文件存放目录
 (defvar score-sync-rubrics-dir (expand-file-name "rubrics" score-sync-root-dir)
-  "评分标准文件存放目录")
+  "评分文件存放目录")
 
 ;; 小组映射哈希表：键=学号(字符串)，值=同组所有学号列表(字符串列表)
 (defvar score-sync-group-map (make-hash-table :test 'equal)
@@ -35,7 +37,7 @@
 
 ;; -------------------------- 基础工具函数 --------------------------
 (defun score-sync-make-dirs ()
-  "创建插件所需目录（根目录+分组目录+评分标准目录），若已存在则不操作"
+  "创建插件所需目录（根目录+分组目录+评分目录），若已存在则不操作"
   (interactive)
   (dolist (dir (list score-sync-root-dir score-sync-groups-dir score-sync-rubrics-dir))
     (unless (file-directory-p dir)
@@ -135,9 +137,9 @@
       title)))
 
 (defun score-sync-parse-rubric-file (file-path)
-  "解析单个评分标准文件，返回包含标题、学号列表和总分数的列表
+  "解析单个评分文件，返回包含标题、学号列表和总分数的列表
   返回格式：(title student-no-list total-score)
-  ARG file-path: 评分标准文件的绝对路径"
+  ARG file-path: 评分文件的绝对路径"
   (when (file-readable-p file-path)
     (with-temp-buffer
       (insert-file-contents file-path)
@@ -191,16 +193,16 @@
         (message "[score-sync] 创建rubrics目录：%s" score-sync-rubrics-dir)
         (make-directory score-sync-rubrics-dir t)
         (setq rubrics-dir-exists t)
-        (message "[score-sync] 已创建评分标准目录：%s" score-sync-rubrics-dir))
+        (message "[score-sync] 已创建评分目录：%s" score-sync-rubrics-dir))
       
       ;; 遍历rubrics目录下的文件
       (if rubrics-dir-exists 
           (let ((rubric-files (directory-files score-sync-rubrics-dir t nil nil))
                 (fill-count 0))
-            (message "[score-sync] 评分标准目录：%s，文件数：%d" score-sync-rubrics-dir (- (length rubric-files) 2)) ;; 减去.和..目录
+            (message "[score-sync] 评分目录：%s，文件数：%d" score-sync-rubrics-dir (- (length rubric-files) 2)) ;; 减去.和..目录
             (dolist (file rubric-files)
               (when (and (file-regular-p file) (not (string-prefix-p "." (file-name-nondirectory file))))
-                (message "[score-sync] 检查评分标准文件：%s" (file-name-nondirectory file))
+                (message "[score-sync] 检查评分文件：%s" (file-name-nondirectory file))
                 (let ((rubric-data (score-sync-parse-rubric-file file)))
                   (message "[score-sync] 解析结果：%s" rubric-data)
                   (when rubric-data
@@ -209,7 +211,7 @@
                           (total-score (caddr rubric-data)))
                       ;; 检查标题是否匹配（忽略大小写）
                       (when (and rubric-title (string-equal (downcase rubric-title) (downcase score-file-title)) total-score)
-                        (message "[score-sync] 找到匹配的评分标准文件：%s，总分数：%s" 
+                        (message "[score-sync] 找到匹配的评分文件：%s，总分数：%s" 
                                  (file-name-nondirectory file) total-score)
                         ;; 检查学号是否在分组映射表中存在
                         (let ((valid-students t)
@@ -256,8 +258,8 @@
                               (warn "[score-sync] 警告：部分学号在分组映射表中不存在：%s，跳过填充" missing-students))))))))
             (if (> fill-count 0)
                 (message "[score-sync] 成绩预输入共填充 %d 名学生" fill-count)
-              (message "[score-sync] 未找到匹配的评分标准文件或无有效学号")))))))
-        (warn "[score-sync] 警告：评分标准目录<%s>不存在或不可访问" score-sync-rubrics-dir)))))
+              (message "[score-sync] 未找到匹配的评分文件或无有效学号")))))))
+        (warn "[score-sync] 警告：评分目录<%s>不存在或不可访问" score-sync-rubrics-dir)))))
 
 ;; -------------------------- 分组文件解析函数 --------------------------
 (defun score-sync-parse-group-file (file-path)
@@ -330,7 +332,7 @@
       (error "[score-sync] 错误：学号<%s>未找到对应分组信息" current-no))
     ;; 检查当前成绩是否为空
     (if (string-blank-p current-score)
-        (warn "[score-sync] 提醒：当前行无有效成绩，无需同步！")
+        (warn "[score-sync] 提示：当前行无有效成绩，无需同步！")
       (progn
         (message "[score-sync] 开始同步学号<%s>的成绩：%s" current-no current-score)
         ;; 遍历同组学号，批量输入成绩
@@ -373,7 +375,7 @@
   添加到Emacs启动钩子，自动初始化"
   (message "[score-sync] 根目录：%s" score-sync-root-dir)
   (message "[score-sync] 分组目录：%s" score-sync-groups-dir)
-  (message "[score-sync] 评分标准目录：%s" score-sync-rubrics-dir)
+  (message "[score-sync] 评分目录：%s" score-sync-rubrics-dir)
   (score-sync-make-dirs)
   ;; 无论哈希表是否为空，都加载分组映射表
   (score-sync-load-all-groups)
@@ -384,7 +386,7 @@
   (define-key global-map (kbd "C-c s s") 'score-sync-sync-score)
   ;; 添加文件打开钩子
   (add-hook 'find-file-hook 'score-sync-auto-fill-scores-when-open)
-  (message "[score-sync] 插件初始化完成，快捷键：C-c s s 执行成绩同步，C-c s a 手动执行成绩预输入，C-c s g 打开分组文件夹，C-c s r 打开评分标准文件夹。"))
+  (message "[score-sync] 插件初始化完成，快捷键：C-c s s 执行成绩同步，C-c s a 手动执行成绩预输入，C-c s g 打开分组文件夹，C-c s r 打开评分文件夹。"))
 
 (defun score-sync-auto-fill-scores-when-open ()
   "当打开文件时自动执行成绩预输入
@@ -421,9 +423,9 @@
     (progn
       (dired score-sync-groups-dir))))
 
-;; 打开评分标准文件夹
+;; 打开评分文件夹
 (defun score-sync-open-rubrics-dir ()
-  "打开评分标准文件存放目录，方便快速添加评分标准文件"
+  "打开评分文件存放目录，方便快速添加评分文件"
   (interactive)
   ;;(score-sync-make-dirs)  ; 确保目录存在
   (if (eq system-type 'windows-nt)
